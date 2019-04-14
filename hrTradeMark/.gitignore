@@ -1,0 +1,12 @@
+Debug/
+
+Release/
+
+hrTradeMark/Debug/
+
+hrTradeMark/Release/
+
+hrTradeMark.sql
+
+ipch/
+Demo/
