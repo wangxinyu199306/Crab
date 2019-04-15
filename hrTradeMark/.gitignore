@@ -8,6 +8,8 @@ hrTradeMark/Release/
 
 hrTradeMark.sdf
 
+*.opensdf
+
 ipch/
 
 Demo/
