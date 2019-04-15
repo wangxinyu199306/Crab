@@ -1,0 +1,10 @@
+LIBRARY hrTradeMark
+EXPORTS
+LoadTemplate
+StatusConfirm
+CheckIfShoot
+CheckIfShoot_Stream
+CheckTradeStatus
+CheckTradeStatus_Stream
+SaveTheStream
+ResetTrade
