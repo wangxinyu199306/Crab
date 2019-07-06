@@ -56,6 +56,8 @@ const uint8_t 上位机调用错误 = 98;
 	}
 	else if (type == 1)
 	{
+		// 这套逻辑是当时做自动拍照触发时加的，这里面的框区域出现在图像流里的时候，就处理这张图。
+		// 现在已经不用了
 		result = tt.SetRegion(cv::Rect(cv::Point(x_tl, y_tl), cv::Point(x_br, y_br)), type);
 		if (result != 处理成功)
 			return result;

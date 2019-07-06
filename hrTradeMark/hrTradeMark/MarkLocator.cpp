@@ -13,7 +13,7 @@ const int FrameDifference = 5;//当背景差值大于这个值时，当作前景
 const int minFeaturePoint = 4;//对一张图/一个区域寻找特征点时，结果不能小于这个值
 
 const uint8_t 处理成功 = 0; //PROCESSOK
-const uint8_t 加载模板错误 = 1; //LOADTEMPLATEERROR
+const uint8_t 加载模板错误 = 1; //LOADTEMPLATEERROR                                                                                     
 const uint8_t 加载图片失败 = 2; //LOADIMAGEERROR
 const uint8_t 特征不够 = 3;//INSUFFICIENTFEATURE
 const uint8_t 特征不匹配 = 4; //FEATUREDISMATCH
