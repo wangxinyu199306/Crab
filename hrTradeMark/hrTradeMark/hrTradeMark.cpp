@@ -141,7 +141,7 @@ const uint8_t 上位机调用错误 = 98;
 	 return 处理成功;
  }
 
- uint8_t __stdcall CheckTradeStatus(char* fileName, double& value, float& incline)
+ uint8_t __stdcall CheckTradeStatus(char* fileName, float* value, float* incline)
  {
 	 uint8_t result;
 	 //传入待检原图（含背景）
@@ -151,10 +151,10 @@ const uint8_t 上位机调用错误 = 98;
 		 return 加载图片失败;
 	 }
 	 float matchRate;
-	 result = tt.EvaAnImage(detected, matchRate, incline);
+	 result = tt.EvaAnImage(detected, *value, *incline);
 	 if (result != 处理成功)
 		 return result;
-	 value = matchRate;
+	 // std::cout << *value << " " << *incline << std::endl;
 	 return 处理成功;
  }
 

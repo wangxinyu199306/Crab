@@ -27,6 +27,7 @@ if __name__ == "__main__":
         value = pointer(c_float(0.0))
         incline = pointer(c_float(0.0))
         ret = dll.CheckTradeStatus(input_path.encode(), value, incline)
-        print("order:{}, status:{}, value:{}, incline:{}".format(order, c_ubyte(ret),  value.contents.value, incline.contents.value))
+        # print("order:{}, status:{}, value:{}, incline:{}".format(order, c_ubyte(ret),  value.contents.value, incline.contents.value))
+       
     
 
