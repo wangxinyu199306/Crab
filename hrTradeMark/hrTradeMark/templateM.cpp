@@ -25,7 +25,7 @@ const int 标记区域最小像素面积 = 96;
 const int 标记区域最小像素边长 = 15;
 
 
-uint8_t TemplateTrade::LoadImageWithPos(cv::Mat backgroundImage, cv::Rect tradePos)
+uint8_t TemplateTrade::LoadImageWithPos(const cv::Mat& backgroundImage, const cv::Rect& tradePos)
 {
 	if (backgroundImage.empty())
 		return 加载图片失败;
@@ -105,7 +105,7 @@ uint8_t TemplateTrade::ClearAll()
 	return 处理成功;
 }
 
-uint8_t TemplateTrade::CheckShootingAndEva(cv::Mat image, bool &isShoot, float& matchRate, float& incline)
+uint8_t TemplateTrade::CheckShootingAndEva(const cv::Mat& image, bool &isShoot, float& matchRate, float& incline)
 {
 	if (image.cols != background.cols || image.rows != background.rows)
 		return 加载图片失败;
@@ -172,7 +172,7 @@ uint8_t TemplateTrade::CheckShootingAndEva(cv::Mat image, bool &isShoot, float& 
 	}
 }
 
-uint8_t TemplateTrade::EvaAnImage(cv::Mat image, float& matchRate, float& incline)
+uint8_t TemplateTrade::EvaAnImage(const cv::Mat& image, float& matchRate, float& incline)
 {
 	uint8_t result;
 	cv::Mat caliedImage;
@@ -207,7 +207,7 @@ uint8_t TemplateTrade::EvaAnImage(cv::Mat image, float& matchRate, float& inclin
 	return 处理成功;
 }
 
-uint8_t TemplateTrade::CaliImage(cv::Mat image, cv::Mat& caliedImage,float& incline)
+uint8_t TemplateTrade::CaliImage(const cv::Mat& image, cv::Mat& caliedImage,float& incline)
 {
 	uint8_t result;
 	//外接矩ROI区域特征点提取
@@ -259,7 +259,7 @@ uint8_t TemplateTrade::GetSelfKeyPoints()
 	}
 }
 
-uint8_t TemplateTrade::CheckMode_1(cv::Mat inputImage, cv::Mat templateImage, float &status)
+uint8_t TemplateTrade::CheckMode_1(const cv::Mat& inputImage, const cv::Mat& templateImage, float &status)
 {
 	//该方法用来判断模板和待测区域之间的相似度
 	//待测区域已经过放大
@@ -420,7 +420,7 @@ uint8_t TemplateTrade::CheckMode_1(cv::Mat inputImage, cv::Mat templateImage, fl
 	}
 }
 
-uint8_t TemplateTrade::CheckMode_2(cv::Mat inputImage, cv::Mat templateImage, float &status, cv::Point& tlPoint)
+uint8_t TemplateTrade::CheckMode_2(const cv::Mat& inputImage, const cv::Mat& templateImage, float &status, cv::Point& tlPoint)
 {
 	//该方法用来判断模板和待测区域之间的相似度
 	//待测区域已经过放大

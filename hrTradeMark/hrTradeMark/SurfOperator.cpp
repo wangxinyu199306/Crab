@@ -12,7 +12,7 @@ const uint8_t 透视变换失败 = 7; //HOMOFAILED
 
 const float PI = 3.1415926;
 
-uint8_t SurfOperator::GetPointAndDescriptor(cv::Mat image, vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
+uint8_t SurfOperator::GetPointAndDescriptor(const cv::Mat& image, vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
 {
 	cv::SurfFeatureDetector detector(minHessian);
 	detector.detect(image, keypoints);
@@ -34,7 +34,7 @@ uint8_t SurfOperator::GetPointAndDescriptor(cv::Mat image, vector<cv::KeyPoint>&
 		return 处理成功;
 }
 
-uint8_t SurfOperator::ScreenMatchPoints(cv::Mat descriptors1, cv::Mat descriptors2, vector<cv::DMatch>& goodMatches)
+uint8_t SurfOperator::ScreenMatchPoints(const cv::Mat& descriptors1, const cv::Mat& descriptors2, vector<cv::DMatch>& goodMatches)
 {
 	cv::BFMatcher matcher(cv::NORM_L2);
 	goodMatches.clear();
@@ -76,7 +76,7 @@ uint8_t SurfOperator::ScreenMatchPoints(cv::Mat descriptors1, cv::Mat descriptor
 	}
 }
 
-uint8_t SurfOperator::CalibrationImage(cv::Mat templateImage, vector<cv::KeyPoint>& keypoints1, vector<cv::KeyPoint>& keypoints2, vector<cv::DMatch>& goodMatches, cv::Mat oriImage, cv::Mat& imageRoi)
+uint8_t SurfOperator::CalibrationImage(const cv::Mat& templateImage, vector<cv::KeyPoint>& keypoints1, vector<cv::KeyPoint>& keypoints2, vector<cv::DMatch>& goodMatches, const cv::Mat& oriImage, cv::Mat& imageRoi)
 {
 	vector<cv::Point2f> points1, points2;
 
@@ -156,7 +156,7 @@ uint8_t SurfOperator::CalibrationImage(cv::Mat templateImage, vector<cv::KeyPoin
 	}
 }
 
-void SurfOperator::CalculHomoMatrix(vector<cv::KeyPoint> keyPoint1, vector<cv::KeyPoint> keyPoint2, vector<cv::DMatch> matchePoints, cv::Mat& homo)
+void SurfOperator::CalculHomoMatrix(const vector<cv::KeyPoint>& keyPoint1, const vector<cv::KeyPoint>& keyPoint2, const vector<cv::DMatch>& matchePoints, cv::Mat& homo)
 {
 	vector<cv::Point2f> imagePoints1, imagePoints2;
 	for (int i = 0; i < matchePoints.size(); i++)
@@ -168,7 +168,7 @@ void SurfOperator::CalculHomoMatrix(vector<cv::KeyPoint> keyPoint1, vector<cv::K
 	homo = findHomography(imagePoints1, imagePoints2, CV_RANSAC);
 }
 
-uint8_t SurfOperator::TransImage(vector<cv::KeyPoint> tradeKeypoints, vector<cv::KeyPoint>  keypointsROI, vector<cv::DMatch> matches, cv::Mat bottlePart, cv::Size outSize, cv::Mat& tradeRegion, float &incline)
+uint8_t SurfOperator::TransImage(const vector<cv::KeyPoint>& tradeKeypoints, const vector<cv::KeyPoint>& keypointsROI, const vector<cv::DMatch>& matches, const cv::Mat& bottlePart, const cv::Size& outSize, cv::Mat& tradeRegion, float &incline)
 {
 	//与模板的透视变换
 	cv::Mat H;
@@ -206,7 +206,7 @@ uint8_t SurfOperator::TransImage(vector<cv::KeyPoint> tradeKeypoints, vector<cv:
 	return 处理成功;
 }
 
-cv::Rect SurfOperator::BoostRegion(cv::Rect oriRegion, cv::Mat image, float ratio)
+cv::Rect SurfOperator::BoostRegion(const cv::Rect& oriRegion, const cv::Mat& image, float ratio)
 {
 	int oriWidth = oriRegion.width;
 	int oriHeight = oriRegion.height;

@@ -21,7 +21,7 @@ const uint8_t 标记区域错误 = 5;//INVAILDCOORDINATE
 const uint8_t 没有提取到前景 = 6; //NOFOREGROUND
 const uint8_t 透视变换失败 = 7; //HOMOFAILED
 
-uint8_t SURFOperator::GetPointAndDescriptor(cv::Mat image, vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
+uint8_t SURFOperator::GetPointAndDescriptor(const cv::Mat& image, vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
 {
 	cv::SurfFeatureDetector detector(minHessian);
 	detector.detect(image, keypoints);
@@ -47,7 +47,7 @@ uint8_t SURFOperator::GetPointAndDescriptor(cv::Mat image, vector<cv::KeyPoint>&
 	}
 }
 
-uint8_t SURFOperator::ScreenMatchPoints(cv::Mat descriptors1, cv::Mat descriptors2, vector<cv::DMatch>& goodMatches)
+uint8_t SURFOperator::ScreenMatchPoints(const cv::Mat& descriptors1, const cv::Mat& descriptors2, vector<cv::DMatch>& goodMatches)
 {
 	cv::BFMatcher matcher(cv::NORM_L2);
 	goodMatches.clear();
@@ -91,7 +91,7 @@ uint8_t SURFOperator::ScreenMatchPoints(cv::Mat descriptors1, cv::Mat descriptor
 
 
 
-int SURFOperator::GetFinalRoi(cv::Mat templateImage, vector<cv::KeyPoint>& keypoints1, vector<cv::KeyPoint>& keypoints2, vector<cv::DMatch>& goodMatches, cv::Mat oriImage, cv::Mat& imageRoi, float& incline)
+int SURFOperator::GetFinalRoi(const cv::Mat& templateImage, vector<cv::KeyPoint>& keypoints1, vector<cv::KeyPoint>& keypoints2, vector<cv::DMatch>& goodMatches, const cv::Mat& oriImage, cv::Mat& imageRoi, float& incline)
 {
 	vector<cv::Point2f> points1, points2;
 
@@ -171,19 +171,19 @@ int SURFOperator::GetFinalRoi(cv::Mat templateImage, vector<cv::KeyPoint>& keypo
 	}
 }
 
-int SURFOperator::MultiBlockDescriptor(cv::Mat templateImage, vector<vector<cv::KeyPoint>>& blockKeypoints, vector<cv::Mat>& blockDescriptors, cv::Size& blockSize)
+int SURFOperator::MultiBlockDescriptor(const cv::Mat& templateImage, vector<vector<cv::KeyPoint>>& blockKeypoints, vector<cv::Mat>& blockDescriptors, cv::Size& blockSize)
 {
 	return 0;
 }
 
-void FrameDif::GetDifferPart(cv::Mat image, cv::Mat background, cv::Mat& differPart)
+void FrameDif::GetDifferPart(const cv::Mat& image, const cv::Mat& background, cv::Mat& differPart)
 {
 	differPart.create(background.size(), background.type());
 	differPart.setTo(0);
 	for (int r = 0; r < background.rows; r++)
 	{
-		uchar* backPtr = background.ptr<uchar>(r);
-		uchar* imagePtr = image.ptr<uchar>(r);
+		const uchar* backPtr = background.ptr<uchar>(r);
+		const uchar* imagePtr = image.ptr<uchar>(r);
 		uchar* diffPtr = differPart.ptr<uchar>(r);
 		for (int c = 0; c < background.cols; c++)
 		{
@@ -197,7 +197,7 @@ void FrameDif::GetDifferPart(cv::Mat image, cv::Mat background, cv::Mat& differP
 	morphologyEx(differPart, differPart, cv::MORPH_OPEN, openElement);
 }
 
-uint8_t FrameDif::ExtractBottle(cv::Mat image, cv::Mat differPart, cv::Mat& bottlePart)
+uint8_t FrameDif::ExtractBottle(const cv::Mat& image, const cv::Mat& differPart, cv::Mat& bottlePart)
 {
 	vector<vector<cv::Point>> contours_out;
 	cv::findContours(differPart, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
@@ -226,7 +226,7 @@ uint8_t FrameDif::ExtractBottle(cv::Mat image, cv::Mat differPart, cv::Mat& bott
 }
 
 
-void ImageCombination::GetSiftPoint(cv::Mat image, vector<cv::KeyPoint>& keyPoint, cv::Mat& imageDesc)
+void ImageCombination::GetSiftPoint(const cv::Mat& image, vector<cv::KeyPoint>& keyPoint, cv::Mat& imageDesc)
 {
 	if (image.channels() == 1)
 	{
@@ -243,7 +243,7 @@ void ImageCombination::GetSiftPoint(cv::Mat image, vector<cv::KeyPoint>& keyPoin
 	siftDescriptor.compute(image, keyPoint, imageDesc);
 }
 
-void ImageCombination::GetMatchPoint(cv::Mat imageDesc_1, cv::Mat imageDesc_2, vector<cv::DMatch>& matchePoints)
+void ImageCombination::GetMatchPoint(const cv::Mat& imageDesc_1, const cv::Mat& imageDesc_2, vector<cv::DMatch>& matchePoints)
 {
 	cv::BFMatcher matcher(cv::NORM_L2);
 	std::vector<cv::DMatch> matches;
@@ -280,7 +280,7 @@ void ImageCombination::GetMatchPoint(cv::Mat imageDesc_1, cv::Mat imageDesc_2, v
 
 }
 
-void ImageCombination::CalculHomoMatrix(vector<cv::KeyPoint> keyPoint1, vector<cv::KeyPoint> keyPoint2, vector<cv::DMatch> matchePoints, cv::Mat& homo)
+void ImageCombination::CalculHomoMatrix(const vector<cv::KeyPoint>& keyPoint1, const vector<cv::KeyPoint>& keyPoint2, const vector<cv::DMatch>& matchePoints, cv::Mat& homo)
 {
 	vector<cv::Point2f> imagePoints1, imagePoints2;
 	for (int i = 0; i < matchePoints.size(); i++)
@@ -292,7 +292,7 @@ void ImageCombination::CalculHomoMatrix(vector<cv::KeyPoint> keyPoint1, vector<c
 	homo = findHomography(imagePoints1, imagePoints2, CV_RANSAC);
 }
 
-double ImageCombination::CalculateSimilarity(cv::Mat standard, cv::Mat measuring)
+double ImageCombination::CalculateSimilarity(const cv::Mat& standard, const cv::Mat& measuring)
 {
 	//该方法用来判断模板和待测区域之间的相似度
 	//待测区域已经过放大
@@ -450,7 +450,7 @@ double ImageCombination::CalculateSimilarity(cv::Mat standard, cv::Mat measuring
 	return 1;
 }
 
-double ImageCombination::CalculateSimilarityAndReturnLocation(cv::Mat standard, cv::Mat measuring, cv::Point& ltPoint)
+double ImageCombination::CalculateSimilarityAndReturnLocation(const cv::Mat& standard, const cv::Mat& measuring, cv::Point& ltPoint)
 {
 	//该方法用来判断模板和待测区域之间的相似度
 	//待测区域已经过放大
@@ -625,7 +625,7 @@ double ImageCombination::CalculateSimilarityAndReturnLocation(cv::Mat standard, 
 	return 1;
 }
 
-uint8_t ImageCombination::TransImage(vector<cv::KeyPoint> tradeKeypoints, vector<cv::KeyPoint>  keypointsROI, vector<cv::DMatch> matches, cv::Mat bottlePart, cv::Size outSize, cv::Mat& tradeRegion)
+uint8_t ImageCombination::TransImage(const vector<cv::KeyPoint>& tradeKeypoints, const vector<cv::KeyPoint>& keypointsROI, const vector<cv::DMatch>& matches, const cv::Mat& bottlePart, const cv::Size& outSize, cv::Mat& tradeRegion)
 {
 	//与模板的透视变换
 	cv::Mat H;
@@ -655,7 +655,7 @@ uint8_t ImageCombination::TransImage(vector<cv::KeyPoint> tradeKeypoints, vector
 	return 处理成功;
 }
 
-cv::Rect ImageCombination::BoostRegion(cv::Rect oriRegion, cv::Mat image, float ratio)
+cv::Rect ImageCombination::BoostRegion(const cv::Rect& oriRegion, const cv::Mat& image, float ratio)
 {
 	int oriWidth = oriRegion.width;
 	int oriHeight = oriRegion.height;

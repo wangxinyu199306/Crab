@@ -26,7 +26,7 @@ int BmpOperation::ByteToMat(BYTE* bmpStream, int streamLength, cv::Mat& image)
 	return 0;
 }
 
-int BmpOperation::GetMatLength(BYTE* originalStream, cv::Mat image, int &length)
+int BmpOperation::GetMatLength(BYTE* originalStream, const cv::Mat& image, int &length)
 {
 	BITMAPFILEHEADER* header = (BITMAPFILEHEADER*)originalStream;
 	int headerlen = header->bfOffBits;
@@ -61,7 +61,7 @@ int BmpOperation::GetHeaderLength(BYTE* imageStream, int streamLength, int & hea
 	return 0;
 }
 
-int BmpOperation::MatToByte(BYTE* originalStream, cv::Mat image, BYTE* outputStream)
+int BmpOperation::MatToByte(BYTE* originalStream, const cv::Mat& image, BYTE* outputStream)
 {
 	if (image.empty())
 	{
@@ -124,7 +124,7 @@ int BmpOperation::RawByteToMat(BYTE* originalStream, int streamLength, int rows,
 	return 0;
 }
 
-int BmpOperation::MatToRawByte(cv::Mat image, BYTE* outputStream)
+int BmpOperation::MatToRawByte(const cv::Mat& image, BYTE* outputStream)
 {
 	int size = image.rows*image.cols;
 	std::memcpy(outputStream, image.data, size * sizeof(BYTE));
