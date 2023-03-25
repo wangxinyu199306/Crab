@@ -3,6 +3,8 @@
 #include <iostream>
 #include <tchar.h>
 #include <windows.h>
+#include <algorithm>
+#include <math.h>
 #include "templateM.h"
 
 
@@ -575,4 +577,43 @@ uint8_t TemplateTrade::CheckMode_2(const cv::Mat& inputImage, const cv::Mat& tem
 		status = -1;
 		return 处理成功;
 	}
+}
+
+uint8_t TemplateTrade::GetSmoothRegions()
+{
+	// tradeImage
+	int DETECTLENGTH = 6;
+	int DETECTACCURACY = 10;
+	int detect_lower_index = int(4 * DETECTLENGTH * DETECTLENGTH * 0.15);
+	int detect_upper_index = int(4 * DETECTLENGTH * DETECTLENGTH * 0.85);
+	int width = tradeImage.cols;
+	int height = tradeImage.rows;
+
+	smoothDetectMask.create(tradeImage.size(), tradeImage.type());
+	smoothDetectMask.setTo(0);
+
+	for (int r = DETECTLENGTH; r < height - DETECTLENGTH; r++) {
+		uchar* row_ptr = smoothDetectMask.ptr<uchar>(r);
+		for (int c = DETECTLENGTH; c < width - DETECTLENGTH; c++) {
+			uchar _min = 255, _max = 0;
+			bool is_smooth_pixel = true;
+			std::vector<uchar> temp_container;
+			temp_container.reserve(4 * DETECTLENGTH*DETECTLENGTH);
+			for (int i = r - DETECTLENGTH; i <= r + DETECTLENGTH; i++){
+				for (int j = c - DETECTLENGTH; j <= c + DETECTLENGTH; j++) {
+					temp_container.push_back(tradeImage.at<uchar>(i, j));	
+				}
+			}
+			std::sort(temp_container.begin(), temp_container.end());
+			if (temp_container[detect_upper_index] - temp_container[detect_lower_index] < DETECTACCURACY) {
+				row_ptr[c] = 255;
+			}
+		}
+	}
+	cv::imwrite("tradeImage.png", tradeImage);
+	cv::imwrite("smoothDetectMask.png", smoothDetectMask);
+	return 处理成功;
+
+
+
 }

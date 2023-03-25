@@ -23,6 +23,8 @@ public:
 	cv::Rect shootingRegion;//在背景中模板的位置
 	cv::Mat shootingImage;//从背景上切下来的模板的图片
 	cv::Rect defaultShooltRegion;//检测区
+	cv::Mat smoothDetectMask;
+
 
 	vector<cv::KeyPoint> tradeKeypoints;//商标模板的特征点
 	cv::Mat tradeDescriptor; //商标模板的特征描述符
@@ -53,6 +55,8 @@ public:
 	uint8_t CaliImage(const cv::Mat& image, cv::Mat& caliedImage, float& incline);
 
 	uint8_t CheckMarkRegion(const cv::Mat& caliedImage);
+	// 自动检测模板中的平滑区域
+	uint8_t GetSmoothRegions();
 
 protected:
 	uint8_t GetSelfKeyPoints();
@@ -62,6 +66,8 @@ protected:
 	uint8_t CheckMode_1(const cv::Mat& inputImage, const cv::Mat& tempLateImage, float& status);
 
 	uint8_t CheckMode_2(const cv::Mat& inputImage, const cv::Mat& tempLateImage, float& status, cv::Point& tlPoint);
+	// 检测平滑区域是否有褶皱出现
+	uint8_t CheckMode_3(const cv::Mat& inputImage, float& status);
 
 private:
 

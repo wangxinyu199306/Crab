@@ -71,6 +71,12 @@ const uint8_t 上位机调用错误 = 98;
 		result = tt.SetRegion(cv::Rect(cv::Point(x_tl, y_tl), cv::Point(x_br, y_br)), type);
 		return result;
 	}
+	else if (type == 3)
+	{
+		// 这个逻辑是给褶皱检测准备的，type=3时，程序会自动检测一些贯通的平滑区域，用于验证后面的褶皱产生的变化
+		result = tt.GetSmoothRegions();
+		return result;
+	}
 	else
 	{
 		return 上位机调用错误;
