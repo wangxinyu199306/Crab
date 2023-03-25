@@ -1,0 +1,3 @@
+LIBRARY hrIntegrityDetection
+EXPORTS
+TestSum
