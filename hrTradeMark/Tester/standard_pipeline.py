@@ -1,11 +1,11 @@
-# encoding: utf-8
+﻿# encoding: utf-8
 import os,sys
 import time
 from ctypes import *
 
 here = os.path.abspath(os.path.dirname(__file__))
 dll_path = os.path.join(here, '..\Release\hrTradeMark.dll')
-dll_path = os.path.join(here, '..\OldVersion\hrTradeMark.dll')
+# dll_path = os.path.join(here, '..\OldVersion\hrTradeMark.dll')
 
 if __name__ == "__main__":
     dll = windll.LoadLibrary(dll_path)
@@ -32,8 +32,9 @@ if __name__ == "__main__":
         input_path = os.path.join(here,"../../../Dataset/DedupData1/IMG_35{}.JPG".format(order))
         value = pointer(c_float(0.0))
         incline = pointer(c_float(0.0))
-        ret = dll.CheckTradeStatus(input_path.encode(), value, incline)
-        # print("order:{}, status:{}, value:{}, incline:{}".format(order, c_ubyte(ret),  value.contents.value, incline.contents.value))
+        mismatch_region = pointer(c_int(-1))
+        ret = dll.CheckTradeStatus(input_path.encode(), value, incline, mismatch_region)
+        print("order:{}, status:{}, value:{}, incline:{}, mismatch_region:{}".format(order, c_ubyte(ret),  value.contents.value, incline.contents.value, mismatch_region.contents.value))
     step3_time = time.time()
     print("load image cost : {}".format(step1_time - start_time))
     print("load template cost : {}".format(step2_time - step1_time))

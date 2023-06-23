@@ -174,7 +174,7 @@ uint8_t TemplateTrade::CheckShootingAndEva(const cv::Mat& image, bool &isShoot, 
 	}
 }
 
-uint8_t TemplateTrade::EvaAnImage(const cv::Mat& image, float& matchRate, float& incline)
+uint8_t TemplateTrade::EvaAnImage(const cv::Mat& image, float& matchRate, float& incline, int& mismatch_region)
 {
 	uint8_t result;
 	cv::Mat caliedImage;
@@ -183,28 +183,36 @@ uint8_t TemplateTrade::EvaAnImage(const cv::Mat& image, float& matchRate, float&
 		return result;
 	float status;
 	double minValue = DBL_MAX;
+	mismatch_region = -1;
 	for (int i = 0; i < markRegion.size(); i++)
 	{
 		cv::Mat standard(tradeImage, markRegion[i]);//商标模板的区域
 		cv::Rect boostRegion = BoostRegion(markRegion[i], tradeImage);
+		// 这个CheckMode_1用来检测单一标记区域的合法性
+		// 返回值有两种可能，一个为“标记区域错误”，代表标记区域尺寸不合法，一般不会发生
+		// 第二种可能为“处理成功”，但这里的处理成功并不代表区域的合法，只是指整个方法的运行无错误
+		// 合法时status会返回一个0~1之间的相似度，不合法时，status返回-1
 		uint8_t result = CheckMode_1(caliedImage(boostRegion), standard, status);
-		if (status < minValue)
-		{
+		if (status < minValue) {
 			minValue = status;
+		}
+		if (status < 0.94 && mismatch_region < 0) {
+			mismatch_region = i;  // 返回第一个出错的区域
+			break;
 		}
 	}
 
 	if (minValue == -1)
 	{
-		matchRate = 1;
+		matchRate = 1;  // 匹配失败
 	}
 	else if (minValue < 0.94)
 	{
-		matchRate = 2;
+		matchRate = 2;  // 匹配相似度不高
 	}
 	else
 	{
-		matchRate = 0;
+		matchRate = 0;  // 匹配成功
 	}
 	return 处理成功;
 }
@@ -276,7 +284,7 @@ uint8_t TemplateTrade::CheckMode_1(const cv::Mat& inputImage, const cv::Mat& tem
 	//3为4分切割法
 
 	#pragma region 分割进入blockArray
-	if (c2rRatio >= 3 && r2cRatio == 1)
+	if (c2rRatio >= 3 && r2cRatio <= 1)
 	{
 		//mode1:特征区域的列比高大两倍以上，将长条切成等比的N份
 		mode = 1;
@@ -288,7 +296,7 @@ uint8_t TemplateTrade::CheckMode_1(const cv::Mat& inputImage, const cv::Mat& tem
 			blockArray.push_back(tempMat);
 		}
 	}
-	else if (r2cRatio >= 3 && c2rRatio == 1)
+	else if (r2cRatio >= 3 && c2rRatio <= 1)
 	{
 		//mode2:特征区域的高比列大两倍以上，将竖条切成等比的N份
 		mode = 2;

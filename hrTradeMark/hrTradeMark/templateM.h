@@ -49,7 +49,7 @@ public:
 	//检测是否需要拍照，如果是，则进行判读，如果不是，判定不是后立刻返回 isShoot = false -- 已废弃
 	uint8_t CheckShootingAndEva(const cv::Mat& image, bool &isShoot, float& matchRate, float& incline);//检查当前图片是否拍照
 
-	uint8_t EvaAnImage(const cv::Mat& image, float& matchRate, float& incline);
+	uint8_t EvaAnImage(const cv::Mat& image, float& matchRate, float& incline, int& mismatch_region);
 
 	//把目标图片矫正到 shootingImage相同的坐标系上，输出与尺寸shootImage相同
 	uint8_t CaliImage(const cv::Mat& image, cv::Mat& caliedImage, float& incline);

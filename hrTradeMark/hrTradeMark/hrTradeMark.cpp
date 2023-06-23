@@ -98,56 +98,7 @@ const uint8_t 上位机调用错误 = 98;
 	 return 处理成功;
 }
 
-
- uint8_t __stdcall CheckIfShoot(char* fileName,double& value, float& incline)
- {
-	 cv::Mat checkImage = cv::imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
-	 if (checkImage.empty() || tt.background.cols != checkImage.cols)
-	 {
-		 return 加载图片失败;
-	 }
-	 bool isShoot;
-	 float matchRate;
-	 uint8_t result = tt.CheckShootingAndEva(checkImage, isShoot, matchRate, incline);
-	 if (result != 处理成功)
-		 return result;
-	 if (isShoot)
-	 {
-		 value = matchRate;
-	 }
-	 else
-	 {
-		 value = -1;
-	 }
-	return 处理成功;
- }
-
- uint8_t __stdcall CheckIfShoot_Stream(BYTE* ImageStream,int streamLength, int width, int height, double& value, float& incline)
- {
-	 cv::Mat checkImage;
-	 int rst = bo.RawByteToMat(ImageStream, streamLength, height, width, checkImage);
-	 if (checkImage.empty() || tt.background.cols != checkImage.cols)
-	 {
-		 return 加载图片失败;
-	 }
-
-	 bool isShoot;
-	 float matchRate;
-	 uint8_t result = tt.CheckShootingAndEva(checkImage, isShoot, matchRate, incline);
-	 if (result != 处理成功)
-		 return result;
-	 if (isShoot)
-	 {
-		 value = matchRate;
-	 }
-	 else
-	 {
-		 value = -1;
-	 }
-	 return 处理成功;
- }
-
- uint8_t __stdcall CheckTradeStatus(char* fileName, float* value, float* incline)
+ uint8_t __stdcall CheckTradeStatus(char* fileName, float* value, float* incline, int* mismatch_region)
  {
 	 uint8_t result;
 	 //传入待检原图（含背景）
@@ -157,29 +108,10 @@ const uint8_t 上位机调用错误 = 98;
 		 return 加载图片失败;
 	 }
 	 float matchRate;
-	 result = tt.EvaAnImage(detected, *value, *incline);
+	 result = tt.EvaAnImage(detected, *value, *incline, *mismatch_region);
 	 if (result != 处理成功)
 		 return result;
 	 // std::cout << *value << " " << *incline << std::endl;
-	 return 处理成功;
- }
-
- uint8_t __stdcall CheckTradeStatus_Stream(BYTE* ImageStream, int streamLength, int width, int height, double& value, float& incline)
- {
-	 uint8_t result;
-	 //传入待检原图（含背景）
-	 cv::Mat detected;
-	 result = bo.RawByteToMat(ImageStream, streamLength, height, width, detected);
-	 if (detected.empty() || tt.background.cols != detected.cols)
-	 {
-		 return 加载图片失败;
-	 }
-	 float matchRate;
-	 result = tt.EvaAnImage(detected, matchRate, incline);
-	 if (result != 处理成功)
-		 return result;
-	 value = matchRate;
-
 	 return 处理成功;
  }
 
